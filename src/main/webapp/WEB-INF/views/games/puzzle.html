@@ -1,0 +1,782 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <meta http-equiv="expires" content="0">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no;" name="format-detection">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport">
+    <title>Nuby努比</title>
+    <link rel="stylesheet" type="text/css" href="${base}/static/css/game/puzzle.css">
+    <style type="text/css">
+
+    </style>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script>
+        var images = { localId: [], serverId: [] };
+        var i = 0, length = 0;
+        var uploadsuc = false;
+        var check = false;
+        var shareData = {
+            title: 'xxx妈妈真有才，娃还可以这么晒!',
+            desc: 'xxx妈妈真有才，娃还可以这么晒!',
+            link: 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri='+encodeURIComponent('${shareurl}')+'&response_type=code&scope=snsapi_base&state=${openid}#wechat_redirect',
+            imgUrl: '${gameSet.image1}'
+        }
+        var shareUrl = '/games/sharelog.do?pageToken=${pageToken}';
+        wx.config({
+            debug: false,
+            appId: '${appid}',
+            timestamp: ${timestamp},
+            nonceStr: '${nonce}',
+            signature:'${signature}',
+            jsApiList:[
+                'checkJsApi',
+                'onMenuShareTimeline',
+                'onMenuShareAppMessage',
+                'onMenuShareQQ',
+                'onMenuShareWeibo',
+                'hideMenuItems',
+                'showMenuItems',
+                'hideAllNonBaseMenuItem',
+                'showAllNonBaseMenuItem',
+                'chooseImage',
+                'previewImage',
+                'uploadImage',
+                'getNetworkType',
+                'hideOptionMenu',
+                'showOptionMenu']
+        });
+
+        wx.ready(function () {
+            wx.checkJsApi({
+                jsApiList: ['getNetworkType'],
+                success: function (res) {
+                    $('#loadMask').hide();
+                }
+            });
+
+            wx.getNetworkType({
+                success: function (res) {
+                    var nt = res.networkType;
+                    if (nt!='wifi'){
+                        alert('亲,您当前用的不是WIFI环境,加载较缓慢请稍后.');
+                    }
+                }
+            });
+
+            document.querySelector('#uploadImgBtn1').onclick = function () {
+                wx.chooseImage({
+                    success: function (res) {
+                        images.localId = res.localIds;
+                        length = images.localId.length;
+                        if (length != 1) {
+                            alert('亲，别太贪心了哦，每只能上传1张宝宝的照片，请重新选择.');
+                            return;
+                        }
+                        upload();
+                    }
+                });
+            };
+            document.querySelector('#uploadImgBtn2').onclick = function () {
+                wx.chooseImage({
+                    success: function (res) {
+                        images.localId = res.localIds;
+                        if (length != 1) {
+                            alert('亲，别太贪心了哦，每只能上传1张宝宝的照片，请重新选择.');
+                            return;
+                        }
+                        upload();
+                    }
+                });
+            };
+            regShareEvent();
+        });
+
+        wx.error(function(res) {
+            $('#loadMask').show();
+            alert('亲，当前游戏人数过多，将重新载入游戏');
+            reload();
+        });
+
+        function regShareEvent() {
+            wx.onMenuShareTimeline({
+                title: shareData.title,
+                link: shareData.link,
+                imgUrl: shareData.imgUrl,
+                success: function () {
+                    var data = {
+                        'openid': player,
+                        'type': 3
+                    };
+                    ajaxSubmit(shareUrl, data);
+                },
+                cancel: function () {
+                    alert('亲，取消分享不能拿到宝贝哦!');
+                }
+            });
+            wx.onMenuShareAppMessage({
+                title: shareData.title,
+                desc: shareData.desc,
+                link: shareData.link,
+                imgUrl: shareData.imgUrl,
+                success: function () {
+                    var data = {
+                        'openid': player,
+                        'type': 0
+                    };
+                    ajaxSubmit(shareUrl, data);
+                },
+                cancel: function () {
+                    alert('亲，取消分享不能拿到宝贝哦!');
+                }
+            });
+            wx.onMenuShareQQ({
+                title: shareData.title,
+                desc: shareData.desc,
+                link: shareData.link,
+                imgUrl: shareData.imgUrl,
+                success: function () {
+                    var data = {
+                        'openid': player,
+                        'type': 1
+                    };
+                    ajaxSubmit(shareUrl, data);
+                },
+                cancel: function () {
+                    alert('亲，取消分享不能拿到宝贝哦!');
+                }
+            });
+            wx.onMenuShareWeibo({
+                title: shareData.title,
+                desc: shareData.desc,
+                link: shareData.link,
+                imgUrl: shareData.imgUrl,
+                success: function () {
+                    var data = {
+                        'openid': player,
+                        'type': 2
+                    };
+                    ajaxSubmit(shareUrl, data);
+                },
+                cancel: function () {
+                    alert('亲，取消分享不能拿到宝贝哦!');
+                }
+            });
+        }
+        function upload() {
+            wx.uploadImage({
+                localId: images.localId[0],
+                success: function (res) {
+                    images.serverId.push(res.serverId);
+                    if (images.serverId.length == 1) {
+                        $('#uploadTipSp1').html('上传成功');
+                        document.querySelector('#uploadImgBtn1').onclick = function () {
+                        };
+                        ajaxSubmit('/games/upload.do', {
+                            'level': 1,
+                            'name': babyName,
+                            'openid': player,
+                            'serverid': images.serverId[0]
+                        });
+                    } else {
+                        $('#uploadTipSp2').html('上传成功');
+                        document.querySelector('#uploadImgBtn2').onclick = function () {
+                        };
+                        uploadsuc = true;
+                        ajaxSubmit('/games/upload.do', {
+                            'level': 2,
+                            'name': babyName,
+                            'openid': player,
+                            'serverid': images.serverId[1]
+                        });
+                        shareData.imgUrl = '${qnCname}/'+images.serverId[1]+'.jpg';
+                        regShareEvent();
+                    }
+                    images.localId = [];
+                },
+                fail: function (res) {
+                    alert('亲，当前人数比较多，请稍后再试!');
+                }
+            });
+        }
+    </script>
+</head>
+
+<body>
+<div id="loadMask">
+    <img src="${base}/static/img/pub/loading.gif" alt="加载中..."/>
+</div>
+<div class="lis hide" id="gameNav">
+    <div><a style="border-bottom: 3px solid #D38B27;" href="#">游戏规则</a></div>
+    <div><a style="border-bottom: 3px solid #fd6766;" href="#">游戏排名</a></div>
+    <div><a style="border-bottom: 3px solid #04fece;" href="#">我的优惠券</a>	</div>
+    <div>
+        <a style="border-bottom: 3px solid #fdcd01;" href="#"><img width="15" src="${base}/static/img/game/replay.png">重玩</a>
+    </div>
+</div>
+<div id="gameRules" style="display: none">
+    <div class="title">
+        <h1>游戏规则</h1>
+    </div>
+    <div class="content">
+        <p class="content_p">移动小方块拼出完整的图片</p>
+        <p class="content_p">在规定时间内拼完就可以顺利进入下一关游戏</p>
+        <p style="font-size: 1.6rem;" class="content_p_mt">成功闯过四关游戏者</p>
+        <p style="font-size: 1.3rem;margin-top: 14px;color: #ff0000;">拥有宝宝专属游戏打造特权</p>
+        <p class="content_p_mt">点击照片上传按钮，上传两张宝宝照片</p>
+        <p>
+            <img id="uploadBtnImg" src="${base}/static/img/game/upload_btn.png" style="width: 60%;max-width: 274px"/>
+        </p>
+        <p class="content_p">点击右上角分享按钮，<img src="${base}/static/img/game/menu_btn.png" width="24" height="15" align="absmiddle"/></p>
+        <p class="content_p">赶紧把宝宝的专属游戏分享给亲朋好友吧</p>
+        <p>
+            <img src="${base}/static/img/game/share_con.png" style="width: 100%;margin-top: 6px; max-width: 379px;">
+        </p>
+        <p style="font-size: 1.3rem;color: #ff0000;" class="content_p_mt">分享游戏给亲朋好友还有机会</p>
+        <p style="margin-top:16px;font-size: 1.2rem;color: #ff0000;">获得努比优惠劵哦～～</p>
+        <p class="content_p_mt">(每个微信号只有一次机会哦)</p>
+        <p class="content_p_mt">具体优惠劵查看，请点击“<font color="#ff0000">我的优惠劵</font>”</p>
+    </div>
+    <p align="center">
+        <a class="returnGame">返回游戏</a>
+    </p>
+
+</div>
+<div id="gameRanks" style="display: none">
+    <div class="title">
+        <h1 style="color:#000;">游戏排名</h1>
+    </div>
+    <div class="content">
+        <table width="100%">
+            <#list ranks as r>
+                <tr>
+                    <td width="28">
+                        <#if r_index == 0>
+                            <div class="gold"><span>${r_index+1}</span></div>
+                            <#elseif r_index == 1>
+                                <div class="silver"><span>${r_index+1}</span></div>
+                                <#elseif r_index == 2>
+                                    <div class="bronze"><span>${r_index+1}</span></div>
+                                    <#else>
+                                        ${r_index+1}
+                        </#if>
+
+                    </td>
+                    <td width="50">
+                        <img src="${r.headImg}"/>
+                    </td>
+                    <td align="left">
+                        ${r.nickName}
+                    </td>
+                    <td width="80" class="pass_time">
+                        ${r.ptFormat}
+                    </td>
+                </tr>
+            </#list>
+            <tr>
+                <td colspan="4" style="border: none; padding: 34px">
+                    <a class="dekaronGame">立刻挑战</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div id="myCoupon" style="display: none">
+    <div class="title">
+        <h1>优惠券查看说明</h1>
+    </div>
+    <div class="content" style="margin-top: 14px;">
+        <p class="content_p">游戏分享给亲朋好友后</p>
+        <p class="content_p">微信会自动收到一条努比微店优惠劵链接</p>
+        <p class="content_p">点击链接，根据提示查看</p>
+        <p align="center" class="content_p_mt">
+            <img id="storeLogin" src="${base}/static/img/game/store_login.png" style="width: 68%;max-width: 373px;"/>
+        </p>
+        <p class="content_p">未注册用户，需要先注册才能查看</p>
+        <p align="center" class="content_p_mt">
+            <img src="${base}/static/img/game/my_order.png" style="width:127px;">
+        </p>
+        <p class="content_p">点击我的订单</p>
+        <p align="center" class="content_p_mt">
+            <img src="${base}/static/img/game/my_coupon.png" style="width:164px;"/>
+        </p>
+        <p class="content_p_mt">进入页面选择我的优惠劵查看</p>
+    </div>
+    <p align="center">
+        <a class="returnGame">返回游戏</a>
+    </p>
+</div>
+<div id="initCon" style="display: none;">
+    <div id="logo">
+        <img src="http://7xivpv.com1.z0.glb.clouddn.com/index_logo.png-noclip">
+    </div>
+    <div id="inputCtx">
+        <input type="text" id="babyName" name="babyName" class="inputTxt" autofocus="true" placeholder="宝宝姓名" maxlength="16"/>
+        <a href="javascript:;" id="sureBtn" class="sureBtn"> 确定 </a>
+        <p align="center" style="margin-top: 15px">输入宝宝姓名，打造宝宝专属游戏</p>
+        <p align="center">按确定进入游戏</p>
+    </div>
+    <div id="loading">
+        <img src="http://7xivpv.com1.z0.glb.clouddn.com/load_tip.png-noclip">
+    </div>
+</div>
+<div id="gameCon">
+    <!--页面集合-->
+    <div id="pageWrapper">
+        <div id="pages">
+            <div id="page_default" class="page_model" afmoldstyle="block" style="display: none;">
+                <div class="initloading">
+                    <span class="normal-loading"></span>
+                </div>	</div>
+        </div>
+        <div id="page_picture" class="page_model">
+            <div class="drag-content">
+                <div id="play-content" class="play-container">
+                    <div class="drag-box">
+                        <div class="item" sort="1" dragitem="1"></div>
+                        <div class="item" sort="2" dragitem="1"></div>
+                        <div class="item" sort="3" dragitem="1"></div>
+                        <div class="item" sort="4" dragitem="1"></div>
+                        <div class="item" sort="5" dragitem="1"></div>
+                        <div class="item" sort="6" dragitem="1"></div>
+                        <div class="item" sort="7" dragitem="1"></div>
+                        <div class="item" sort="8" dragitem="1"></div>
+                        <div class="item" sort="9" dragitem="1"></div>
+                    </div>
+                    <div class="masker">
+                        <div class="load loaded">
+                            <div class="first-layer"></div>
+                            <div class="second-layer"></div>
+                            <div class="third-layer"></div>
+                            <div class="count-down">
+                                <div class="play-button play-button-ready playbtn"></div>
+                                <ul>
+                                    <li>3</li>
+                                    <li>2</li>
+                                    <li>1</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="done">done</span>
+                </div>
+                <div class="timer">
+                    <div class="timer-con">
+                        <span class="timer-icon"></span>
+                        <span class="t counter" id="timeCounter">60.00''</span>
+                    </div>
+                    <div class="kapics">第(1/4)关，本关限时 60 秒</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 广告 -->
+    <div id="addiv" class="addiv">
+        <img src="${gameSet.adImg}" />
+    </div>
+</div>
+
+<div class="mask">
+    <div id="iosSubTip" class="noSubTip hide" style="color: #fff">
+        <img src="${base}/static/img/gh_bc1b98723f34.jpg" width="200" height="200"/>
+        <p style="margin-top: 5px">保存/长按图片用扫一扫识别</p>
+        <p>或搜索【<span style="font-size:16px;font-weight:bolder;">nubylihan</span>】</p>
+        <p>或点击右上角的查看公众号</p>
+    </div>
+    <div id="noSubTip" class="noSubTip hide">
+        <p class="passtip_p_font">更多精彩，请关注我</p>
+        <div style="height: 40px"></div>
+        <a href="weixin://profile/${mpid}" class="subProfile">关注努比 Nuby</a>
+    </div>
+    <div id="gamePass">
+        <div style="width: 100%;text-align: center;margin: auto;">
+            <p class="passtip_p_font" style="color:#fff;margin-top: 18px;">闯关成功</p>
+            <p class="passtip_p_font" style="color:#fff;" id="passTime">你用了XXX秒</p>
+            <p class="passtip_p_font" style="margin-top: 40px;">恭喜你获得</p>
+            <p class="passtip_p_font">宝宝专属游戏打造特权</p>
+            <p class="pass_p_mt">点击上传按钮，上传两张宝宝照片</p>
+            <p style="font-size:0.9rem;color: #FDD900;">(照片为正方形比例，显示效果最佳)</p>
+            <p style="margin: 28px auto;">
+                <a href="#" class="uploadImgBtn" id="uploadImgBtn1">
+                    照片上传 <span class="uploadTipSp" id="uploadTipSp1">未上传</span>
+                </a>
+            </p>
+            <p style="margin-top:10px;margin-bottom: 22px;">
+                <a href="#" class="uploadImgBtn" id="uploadImgBtn2">
+                    照片上传 <span class="uploadTipSp" id="uploadTipSp2">未上传</span>
+                </a>
+            </p>
+            <p>点击照片上传，自动签署<a href="#" id="agreePhotos" style="color: #FDD900;">肖像权协议</a></p>
+            <p style="margin-top: 18px;" align="center">
+                <a href="#" id="uploadSucBtn" class="uploadImgBtn" style="display: block;width: 100px;"> 确 定 </a>
+            </p>
+        </div>
+    </div>
+    <div id="usePhotosAgree" style="display: none">
+        <div class="title">
+            <h1>肖像权协议</h1>
+        </div>
+        <div class="content">
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;点击上传照片按钮，就代表你已经认可了此协议。上传的照片其肖像授权使用方为NUBY品牌，NUBY品牌有权在不同媒体上投放。本人在签约后不会追究因使用本人肖像的任何责任，但不包括诽谤、侵犯个人隐私的责任追究。
+            </p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;本人已清楚阅读及明白并且同意上述条款。</p>
+        </div>
+
+        <p style="margin-top: 40px;">
+            <a href="#" class="returnUpload" id="readAgreeBtn"> 返 回 </a>
+        </p>
+    </div>
+    <div id="gameresult">
+        <div class="resultcontainer">
+            <div class="resultinfo"></div>
+            <div class="btngroup">
+                <a class="btn1 hide" id="restartgame">加油，再挑战一次</a>
+                <a class="btn1" id="continuegame">挑战下一关</a>=
+            </div>
+            <div class="end-guide hide" id="failtip">
+                <div>比比给你加油哦 ~ ~</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/template" style="display:none;" id="pageTemplate">
+    <div id="<%= id%>" class="pagemodel">
+        <div class="initloading" >
+            <span class="normal-loading"></span>
+        </div>
+    </div>
+</script>
+
+<script type="text/template" style="display:none;" id="jigsawTemplate">
+    <div class="drag-content">
+        <div class="play-container">
+            <div class="drag-box">
+            </div>
+            <div class="masker">
+                <div class="load">
+                    <div class="first-layer"></div>
+                    <div class="second-layer"></div>
+                    <div class="third-layer"></div>
+                    <div class="count-down" >
+                        <div class="play-button play-button-ready playbtn" ></div>
+                        <ul>
+                            <li>3</li>
+                            <li>2</li>
+                            <li>1</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <span class="done">done</span>
+        </div>
+        <div class="timer">
+            <div class="timer-con">
+                <span class="timer-icon"></span>
+                <span class="t counter" id="timeCounter">00.000''</span>
+            </div>
+            <div class="kapics">1/1
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/template" style="display:none;" id="jigsawLayoutTemplate">
+    <% for(var i = 0 ; i < list.length;i++){%>
+    <div class="item" sort="<%=list[i].sort%>" dragitem='1' style="width:<%=list[i].w%>px;height:<%=list[i].h%>px;background:url(<%=img%>) no-repeat;background-position:<%=list[i].x%>px <%=list[i].y%>px;background-size:<%=width%>px <%=height%>px;"></div>
+    <%}%>
+</script>
+<script type="text/template" id="showNextKaTemplate">
+    <div class="shownextka">
+        <div class="lastpic">
+            <img src="<%=pic%>">
+        </div>
+        <div class="msg">
+            <p><%=first%></p>
+            <p><%=second%></p>
+            <p>耗时<%=time%></p>
+        </div>
+        <div class="opera">
+            <span class="red next">第<%=next%>关&gt;</span>
+            <span class="playagain">再玩一遍</span>
+            <span class="share">分享</span>
+        </div>
+    </div>
+</script>
+</div>
+<script src="${base}/static/js/game/common.js"></script>
+<script>
+    !function(e,t){e("data/jigsawGame",function(e,t,n){n.exports=[{type:"jigsaw",ka:[{desc:"1",id:"1",pic:[{img:"${gameSet.image1}",row:2,column:2}]},{desc:"2",id:"2",pic:[{img:"${gameSet.image1}",row:3,type:2,second:${gameSet.time1},column:3},{img:"${gameSet.image2}",row:3,type:2,second:${gameSet.time2},column:3},{img:"${gameSet.image3}",row:3,type:2,second:${gameSet.time3},column:3},{img:"${gameSet.image4}",row:3,type:2,second:${gameSet.time4},column:3}]}]}]})}(window.NODEB&&window.NODEB.define||window.define,window);
+</script>
+<script>
+    $(window).resize(function () {
+        inputPos();
+    });
+    /*
+     * 游戏相关的参数调优
+     */
+    // 画布宽度, 游戏背景宽度, 画布距离顶部高度, 广告图片宽度
+    var playW, playBgW,playMt, adW, loadW, loadMt, playBtn;
+    // 手机类型, 屏幕的宽和高
+    var phoneType,winW,winH;
+    // 记录宝宝名称
+    var babyName = '';
+
+    //游戏记录者
+    var player = '${openid}';
+    <#if player??>player='${player}';</#if>
+    <#if babyName??>babyName='${babyName}';</#if>
+    // 游戏参数
+    var totalTime = 0, pass='0';
+    var token = '${pageToken}';
+    var openid = '${openid}';
+    var isWin = false;
+    var sub = ${sub};
+    // 关卡时间
+    var time1 = ${gameSet.time1};
+    var time2 = ${gameSet.time2};
+    var time3 = ${gameSet.time3};
+    var time4 = ${gameSet.time4};
+
+    $(function(){
+
+        phoneType = navigator.userAgent;
+
+        winW = $(window).width();
+        winH = $(window).height();
+        playBgW = winW > 640 ? 640 : winW;
+        playMt = playBgW * 0.036;
+        loadW = 200;
+        playBtn = 60;
+        loadMt = playMt + 40;
+        if (playBgW < 340) {
+
+            loadMt = 34;
+
+        } else if ( playBgW > 340 && playBgW < 460) {
+            loadW = 200;
+        }
+        else {
+            playMt = playBgW * 0.103;
+            loadW = 300;
+            playBtn = 110;
+            loadMt = playMt + 40;
+        }
+
+        adW = playBgW * 0.9;
+        playW = playBgW * 0.82;
+
+        // 动态更新CSS
+        var headEl = document.getElementsByTagName("head")[0];
+        var styleEl = headEl.getElementsByTagName("style")[0];
+        var playConCss = '.play-container{width:'+playW+'px;height:'+playW+'px;margin-top:'+playMt+'px;} .page_model{width:'+playBgW+'px;height:'+(playBgW*1.272)+'px}';
+        var loadCss = '.load {width:'+loadW+'px;height:'+loadW+'px;margin-top:'+loadMt+'px;border-radius: '+(loadW/2)+'px;}';
+        var adCss = '.addiv img{width:'+adW+'px;}';
+        var playBtnCss = '.play-button{border-left:'+(playBtn==110?105:75)+'px solid rgba(246, 210, 54, 1);border-top:'+playBtn+'px solid transparent;border-bottom:'+playBtn+'px solid transparent;}';
+        var otherCss = '#logo img {width:'+(winW * 0.84)+'px} ' +
+                '#gameRules {padding-left:'+(winW>540?'20%':'5%')+';padding-right:'+(winW>540?'20%':'5%')+';} ' +
+                '.count-down ul {margin-top:'+(winW>500?30:-30)+'px}';
+
+        styleEl.appendChild(document.createTextNode(playConCss));
+        styleEl.appendChild(document.createTextNode(loadCss));
+        styleEl.appendChild(document.createTextNode(playBtnCss));
+        styleEl.appendChild(document.createTextNode(adCss));
+        styleEl.appendChild(document.createTextNode(otherCss));
+        /**
+         * 计算底部广告位置
+         */
+        var pagePH = $('#page_picture').height();
+        if ( (pagePH+150) > winH) {
+            var adMt = pagePH + 24;
+            $('#addiv').css({'position':'relative','margin-top':adMt+'px'});
+        }
+
+        /********* 点击事件注册  *********/
+        /**
+         * 开始按钮
+         */
+        $('#sureBtn').click(function(){
+            var baby = $('#babyName').val();
+
+            if(baby.length < 2) {
+                alert('请输入宝宝的姓名.');
+                return false;
+            }
+
+            if(baby.length > 16) {
+                alert('请输入宝宝的正确姓名.');
+                return false;
+            }
+
+            babyName = baby;
+            shareData.title = shareData.title.replace(/(xxx)/g, babyName);
+            shareData.desc = shareData.desc.replace(/(xxx)/g, babyName);
+
+            regShareEvent();
+
+            $('#initCon').hide();
+            $('#gameNav').show();
+            $('#gameCon').show();
+        });
+        /**
+         * 导航栏
+         */
+        var navs = $('#gameNav').find('a');
+        $(navs).each(function(i){
+            switch (i) {
+                case 0:
+                    $(this).click(function(){
+                        $('#gameRules').show();
+                        $($('#gameRules').siblings()).each(function(r,i){
+                            $(this).hide();
+                        });
+                        $('#gameNav').show();
+                    });
+                    break;
+                case 1:
+                    $(this).click(function(){
+                        $('#gameRanks').show();
+                        $($('#gameRanks').siblings()).each(function(r,i){
+                            $(this).hide();
+                        });
+                        $('#gameNav').show();
+                    });
+                    break;
+                case 2:
+                    $(this).click(function(){
+                        $('#myCoupon').show();
+                        $($('#myCoupon').siblings()).each(function(r,i){
+                            $(this).hide();
+                        });
+                        $('#gameNav').show();
+
+                    });
+                    break;
+                default :
+                    $(this).click(function(){
+                        reload();
+                    });
+                    break;
+            }
+        });
+
+        /**
+         * 返回游戏
+         */
+        $('.returnGame').click(function(){
+            $(this).parent().parent().hide();
+            $('#gameCon').show();
+        });
+
+        $('.dekaronGame').click(function(){
+            $('#gameRanks').hide();
+            $('#gameCon').show();
+        });
+        /**
+         * 检查用户上传
+         */
+        $('#uploadSucBtn').click(function(){
+            if (!uploadsuc) {
+                if(confirm('亲，你确定要放弃宝宝游戏专属权利么？')){
+                    $('.mask').hide();
+                }
+            } else {
+                if(player == openid) {
+                    reload();
+                } else {
+                    window.location.href = '${base}/games/puzzle.do?openid='+player+'&token=${refreshPageToken}';
+                }
+            }
+        });
+        /**
+         * 阅读肖像权协议
+         */
+        $('#readAgreeBtn').click(function(){
+            $('#usePhotosAgree').toggle();
+            $('#gamePass').toggle();
+        });
+        $('#agreePhotos').click(function(){
+            $('#gamePass').toggle();
+            $('#usePhotosAgree').toggle();
+        });
+
+        $.getScript("${base}/static/js/game/puzzle.js",function(){
+
+            if(!(/MicroMessenger/i.test(navigator.userAgent))){
+                alert('更多精彩,敬请关注努比微信!^_^');
+                window.location.href = '${base}/static/html/sub.html';
+            }
+
+            var wxVer = phoneType.match(/MicroMessenger\/([\d\.]+)/i)[1];
+
+            if (wxVer < "6.0.2.58") {
+                alert('亲,抱歉您的微信版本过低, 本次活动仅支持最新版本的微信.');
+                window.location.href = 'http://weixin.qq.com/';
+            }
+
+            $('#gameNav').hide();
+            $('#myCoupon').hide();
+            $('#gameRules').hide();
+            $('#gameCon').hide();
+            $('#loadMask').hide();
+            $('#initCon').show();
+
+            if (babyName != ''){
+                $('#initCon').hide();
+                $('#gameNav').show();
+                $('#gameCon').show();
+                shareData.title = shareData.title.replace(/(xxx)/g, babyName);
+                shareData.desc = shareData.desc.replace(/(xxx)/g, babyName);
+                regShareEvent();
+            }
+
+            if (sub == 0) {
+                window.location.href = '${base}/static/html/sub.html';
+            }
+        });
+
+        // 加速??
+        var img1 = new Image();
+        img1.src = '${gameSet.image1}';
+        var img2 = new Image();
+        img2.src = '${gameSet.image2}';
+        var img3 = new Image();
+        img3.src = '${gameSet.image3}';
+        var img4 = new Image();
+        img4.src = '${gameSet.image4}';
+
+    });
+
+    function inputPos() {
+        var h = $(window).height();
+
+        if(h < 360){
+            $('#inputCtx').css({'position':'relative', 'margin-top':'10px', 'top':'0'});
+            $('#loading').css({'position':'relative','margin-top':'100px'});
+        } else {
+            $('#inputCtx').css({'position':'absolute','margin-top':'-30px', 'top':'50%'});
+            $('#loading').css({'position':'absolute','bottom':'5px'});
+        }
+    }
+
+    function ajaxSubmit(url, data) {
+        $.ajax({
+            type: 'POST',
+            url: '${base}'+url,
+            data: data,
+            dataType: 'json',
+            success: function(data){}
+        });
+    }
+
+    function reload() {
+        window.top.location.href = '${base}/games/puzzle.do?openid=' + player + '&token=${refreshPageToken}';
+    }
+</script>
+</body>
+</html>

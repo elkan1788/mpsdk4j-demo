@@ -1,0 +1,163 @@
+@charset "utf-8";
+/* CSS Document */
+html{
+	height:100%;
+}
+body{
+	margin: 0px;
+	padding: 0px;
+	birder: 0;
+	background-color: #FFF;
+	height:100%;
+	font-size: 13px;
+}
+.headbg{
+	background-image: url(../../img/admin/login-headbg.gif);
+	background-repeat: repeat-x;
+	height: 90px;
+	width: 100%;
+	position: absolute;
+	left: 0px;
+	top: 0px;	
+}
+.footbg{
+	background-image: url(../../img/admin/login-footbg.gif);
+	background-repeat: repeat-x;
+	height: 135px;
+	width: 100%;
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	text-align: center;
+}
+div{
+	margin: 0px;
+	padding: 0px;	
+	border: 0;
+}
+img,form{
+	border: 0;
+}
+a{ 
+	color: #CCE4F7;
+	font-size: 13px;
+	text-decoration: none;
+}
+a:hover{
+	text-decoration: none;
+}
+
+input, img{
+	vertical-align: middle;	
+}
+.bg1{
+	background-color: #18b1f2;
+	width: 100%;
+	height: 58%;	
+}
+.login{
+	height: 375px;
+	width: 820px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-top: -138px;
+	margin-left: -318px;
+	z-index: 99;
+}
+.login .logo{
+	float: left;
+	background-image: url(../../img/admin/lonin-logo.png);
+	background-position: left 70px;
+	height: 192px;
+	width: 300px;
+	background-repeat: no-repeat;
+}
+.login .line{
+	float: left;
+	background-image: url(../../img/admin/login-line.png);
+	background-position: 10px 43px;
+	height: 192px;
+	width: 30px;
+	background-repeat: no-repeat;
+	margin-right: 16px;
+	margin-left: 16px;
+}
+.login .input{
+	height: 162px;
+	margin-top: 47px;
+	*margin-left: 7px;
+	cursor: default;
+	width: 270px;
+	float: left;
+}
+.login .input .logo2{
+	margin-bottom: 20px;
+	margin-left: -9px;
+	margin-bottom: 26px\9;
+	*margin-bottom: 0px;
+	margin-top: 5px;
+}
+.login .input .text span{
+	font-weight: bold;
+	color: #757575;
+	display: inline-block;
+	font-size: 13px;
+}
+.login .input .user{
+	border: 1px solid #858585;
+	height: 19px;
+	background-color: #FFF;
+	width: 134px;
+	padding-left: 4px;
+	line-height: 19px;
+	font-size: 12px;
+	background-image: url(../../img/admin/input_bg.png);
+	background-repeat: repeat-x;
+}
+.login .input .pwd{
+	border: 1px solid #858585;
+	height: 19px;
+	background-color: #FFF;
+	width: 134px;
+	padding-left: 4px;
+	line-height: 19px;
+	font-size: 12px;
+	background-image: url(../../img/admin/input_bg.png);
+	background-repeat: repeat-x;
+}
+.login .input .code{
+	border: 1px solid #858585;
+	height: 19px;
+	background-color: #FFF;
+	width: 68px;
+	padding-left: 4px;
+	line-height: 19px;
+	font-size: 13px;
+	text-transform:uppercase;
+	background-image: url(../../img/admin/input_bg.png);
+	background-repeat: repeat-x;
+}
+.login .input .inpt{
+	float: left;
+}
+.login .input .submit{
+	float: right;
+}
+
+.login .input .but{
+	background-color: #3e6289;
+	background-image: url(../../img/admin/enter_out.png);
+	background-repeat: no-repeat;
+	height: 58px;
+	width: 58px;
+	cursor:pointer;
+	border: 0;
+}
+.copy{
+	line-height: 35px;
+	text-align: center;
+	color: #333;
+	margin-top: 100px;
+	font-size: 12px;
+}

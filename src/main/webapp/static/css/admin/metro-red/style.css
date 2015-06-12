@@ -1,0 +1,44 @@
+@charset "utf-8";
+/* CSS Document */
+#topBg{
+	background-color:#F8EFF0;
+}
+a{
+	color: #1F1F1F;
+	font-size: 12px;
+	text-decoration: none;
+}
+a:hover{
+	text-decoration: underline;
+}
+.up-font{
+	color:blue;
+}
+.up-font-over{
+	color:red;
+}
+.up-font-tit{
+	color: #214FB6;
+}
+.infobox .bar{
+	background-color:#fff0e7;
+}
+.rebg{
+	background-color:#fff0e7;
+}
+.rebg{
+	background-color:#fff0e7;
+}
+.infobox .stit{
+	font-weight: bold;
+	color: #5A2518;
+}
+.infobox .even{
+	background-color:#fff0e7;
+}
+.view-bg{
+	background-color:#fff;
+}
+.view-line{
+	border: 1px solid #214FB6;
+}

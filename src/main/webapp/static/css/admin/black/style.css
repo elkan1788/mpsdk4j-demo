@@ -1,0 +1,83 @@
+@charset "utf-8";
+/* CSS Document */
+#topBg{
+	background-color:#212220;
+}
+a{
+	color: #FFF;
+	font-size: 12px;
+	text-decoration: none;
+}
+a:hover{
+	text-decoration: underline;
+}
+.infobox{
+	border-collapse:collapse;
+}
+.infobox tr td,th{
+	font-size: 12px;
+	border-collapse:collapse;
+	border: 1px dotted #222;
+	padding-right: 5px;
+	padding-left: 5px;
+	position: relative;
+}
+.infobox .bar{
+	background-color:#555;
+}
+.infobox .stit{
+	font-weight: bold;
+	color: #FFFFC1;
+}
+.infobox .even{
+	background-color:#555;
+}
+.list-time{
+	color: #FFFFC1;
+	font-size: 12px;
+}
+.up-font{
+	color:#FDF099;
+}
+.up-font-over{
+	color:#FFF;
+}
+.no-report{
+	line-height: 22px;
+	padding-top: 5px;
+	padding-right: 8px;
+	padding-bottom: 5px;
+	padding-left: 8px;
+	color: #FDF099;
+}
+.pro-status-1{
+	color: #FFD2D2;
+}
+.pro-status-2{
+	color: #CAFFCA;
+}
+.pro-status-3{
+	color: #BDD3FD;
+}
+.pro-status-4{
+	color: #FFE4D2;
+}
+.pro-status-5{
+	color: #D8EBEB;
+}
+.pro-status-6{
+	color: #E1C4FF;
+}
+.view-bg{
+	background-color: #666;
+}
+.table-border{
+	border-collapse: collapse;
+	border: 1px solid #393939;
+}
+.up-font-tit{
+	color: #FFFFFF;
+}
+.view-line{
+	border: 1px solid #333;
+}

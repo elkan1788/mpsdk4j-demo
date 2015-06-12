@@ -1,0 +1,31 @@
+@charset "utf-8";
+/* CSS Document */
+#topBg{
+	background-color:#F7FBEA;
+}
+a{
+	color: #1F1F1F;
+	font-size: 12px;
+	text-decoration: none;
+}
+a:hover{
+	text-decoration: underline;
+}
+.up-font{
+	color:blue;
+}
+.up-font-tit{
+	color: #214FB6;
+}
+.up-font-over{
+	color:red;
+}
+.infobox .even{
+	background-color:#FFF;
+}
+.view-bg{
+	background-color:#fff;
+}
+.view-line{
+	border: 1px solid #214FB6;
+}

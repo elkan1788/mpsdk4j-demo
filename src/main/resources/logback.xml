@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration>
+
+    <jmxConfigurator/>
+
+    <!-- 控制台输出日志 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{100} - %msg%n</pattern>
+            <charset>GBK</charset>
+        </layout>
+
+    </appender>
+
+    <!--<appender name="rollingAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/logs/nubywx.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/logs/nubywx-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>&lt;!&ndash; 必须指定，否则不会往文件输出内容 &ndash;&gt;
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
+        </encoder>
+        <append>false</append>
+        <prudent>false</prudent>
+    </appender>-->
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT" />
+       <!-- <appender-ref ref="rollingAppender" />-->
+    </root>
+</configuration>

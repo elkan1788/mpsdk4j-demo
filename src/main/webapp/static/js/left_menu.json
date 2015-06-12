@@ -1,0 +1,114 @@
+[
+  {
+    "id": "00",
+    "text": "系统监控",
+    "iconCls": "icon-sysinfo",
+    "children": [
+      {
+        "id": "0001",
+        "text": "服务器",
+        "iconCls": "icon-setting",
+        "url": "/admin/monitoring.do?mt=2"
+      },
+      {
+        "id": "0002",
+        "text": "数据库",
+        "iconCls": "icon-update",
+        "url": "/admin/monitoring.do?mt=1"
+      }
+    ]
+  },{
+    "id": "01",
+    "text": "微信配置",
+    "iconCls": "icon-weixin",
+    "children": [
+      {
+        "id": "0101",
+        "text": "公众号信息",
+        "iconCls": "icon-mp",
+        "url": "/admin/wxcfg/setindex.do?mt=1"
+      },
+      {
+        "id": "0102",
+        "text": "欢迎语",
+        "iconCls": "icon-sendmsg",
+        "url": "/admin/wxcfg/setindex.do?mt=2"
+      },
+      {
+        "id": "0104",
+        "text": "粉丝信息",
+        "iconCls": "icon-users",
+        "url": "/admin/wxcfg/flwindex.do"
+      }
+    ]
+  },
+  {
+    "id": "02",
+    "text": "拼图游戏",
+    "iconCls": "icon-puzzle",
+    "children": [
+      {
+        "id": "0201",
+        "text": "游戏参数",
+        "iconCls": "icon-settings",
+        "url": "/admin/gamecfg/setindex.do"
+      },
+      {
+        "id": "0202",
+        "text": "粉丝游戏记录",
+        "iconCls": "icon-time",
+        "url": "/admin/gamecfg/logindex.do"
+      },
+      {
+        "id": "0203",
+        "text": "分享记录",
+        "iconCls": "icon-list",
+        "url": "/admin/gamecfg/shareindex.do"
+      },
+      {
+        "id": "0204",
+        "text": "宝宝照片墙",
+        "iconCls": "icon-photos",
+        "url": "/admin/gamecfg/babyindex.do"
+      }
+    ]
+  },
+  {
+    "id": "03",
+    "text": "奖品设置",
+    "iconCls": "icon-modules",
+    "children": [
+      {
+        "id": "0301",
+        "text": "优惠券管理",
+        "iconCls": "icon-quali",
+        "url": "/admin/coupon/index.do"
+      },
+      {
+        "id": "0302",
+        "text": "发放记录",
+        "iconCls": "icon-print",
+        "url": "/admin/coupon/logindex.do"
+      }
+    ]
+  },
+  {
+    "id": "04",
+    "text": "试用活动",
+    "iconCls": "icon-party",
+    "children": [
+      {
+        "id": "0401",
+        "text": "活动管理",
+        "iconCls": "icon-manager",
+        "url": "/admin/trail/index.do"
+      },
+      {
+        "id": "0402",
+        "text": "粉丝申请登记",
+        "iconCls": "icon-register",
+        "url": "/admin/trail/logindex.do"
+      }
+    ]
+  }
+]
