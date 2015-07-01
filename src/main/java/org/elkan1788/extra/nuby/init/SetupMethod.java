@@ -5,6 +5,7 @@ import org.elkan1788.extra.nuby.service.SettingsService;
 import org.elkan1788.extra.nuby.util.QiNiuTools;
 import org.elkan1788.osc.weixin.mp.vo.MPAct;
 import org.nutz.dao.impl.NutDao;
+import org.nutz.dao.Dao;
 import org.nutz.integration.quartz.NutQuartzCronJobFactory;
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
@@ -29,7 +30,7 @@ public class SetupMethod implements Setup {
 
         Ioc ioc = nutCfg.getIoc();
 
-        InitDB.createDB(ioc.get(NutDao.class));
+        InitDB.createDB((NutDao)ioc.get(Dao.class));
 
         ioc.get(NutQuartzCronJobFactory.class);
 
