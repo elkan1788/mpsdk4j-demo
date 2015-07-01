@@ -35,7 +35,7 @@ public class InitDB {
 
     public static void createDB(NutDao dao) {
         for (Class<?> table : tables) {
-            if (dao.exists(table)) {
+            if (!dao.exists(table)) {
                 dao.create(table, false);
             }
         }
