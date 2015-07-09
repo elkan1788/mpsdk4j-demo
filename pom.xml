@@ -189,11 +189,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.elkan1788.osc</groupId>
-            <artifactId>mpsdk4j</artifactId>
-            <version>1.a.24-SNAPSHOTS</version>
-			<scope>system</scope>
-            <systemPath>${project.basedir}/lib/mpsdk4j-1.a.24-SNAPSHOTS.jar</systemPath>            
+           	<groupId>io.github.elkan1788</groupId>
+	   				<artifactId>mpsdk4j</artifactId>
+	   				<version>1.a.24</version>        
         </dependency>
 
         <dependency>
